@@ -8,6 +8,9 @@
 
 #import <XCTest/XCTest.h>
 
+#import "OSPath.h"
+
+
 @interface OSPathTests : XCTestCase
 
 @end
@@ -26,9 +29,78 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testAbspath
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    NSString * string1 = [OSPath abspath:@""];
+    NSString * string2 = [[NSBundle mainBundle] bundlePath];
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+    
+    string1 = [OSPath abspath:@"/"];
+    string2 = @"/";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+    
+    string1 = [OSPath abspath:@"/foo"];
+    string2 = @"/foo";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+    
+    string1 = [OSPath abspath:@"/bar/"];
+    string2 = @"/bar";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+}
+
+- (void)testBasename
+{
+    NSString * string1 = [OSPath basename:@""];
+    NSString * string2 = @"";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+
+    string1 = [OSPath basename:@"/"];
+    string2 = @"";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+
+    string1 = [OSPath basename:@"/base"];
+    string2 = @"base";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+
+    string1 = [OSPath basename:@"/base/"];
+    string2 = @"";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+
+    string1 = [OSPath basename:@"/base/name"];
+    string2 = @"name";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+}
+
+- (void)testCommonprefix
+{
+    NSString * string1 = [OSPath commonprefix:@[@""]];
+    NSString * string2 = @"";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+
+    string1 = [OSPath commonprefix:@[@"/"]];
+    string2 = @"/";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+
+    string1 = [OSPath commonprefix:@[@"/var", @"/varia"]];
+    string2 = @"/var";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
+
+    string1 = [OSPath commonprefix:@[@"/varia", @"/varia", @"/varca"]];
+    string2 = @"/var";
+    
+    XCTAssert([string1 isEqualToString:string2], @"Error");
 }
 
 @end
